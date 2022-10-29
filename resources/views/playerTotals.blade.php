@@ -8,7 +8,7 @@
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-        <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+        <link href="{{ asset('resources/css/app.css') }}" rel="stylesheet">
 
         <style>
             body {
@@ -24,7 +24,7 @@
        <div style="align-content: start">
            <div>Age: {{ $playerTotals['age'] }}</div>
            <div>Games: {{ $playerTotals['games'] }}</div>
-           <div>GAmes Started: {{ $playerTotals['games_started'] }}</div>
+           <div>Games Started: {{ $playerTotals['games_started'] }}</div>
            <div>Minutes Played: {{ $playerTotals['minutes_played'] }}</div>
            <div>Field Goals: {{ $playerTotals['field_goals'] }}</div>
            <div>Field Goals Attempted: {{ $playerTotals['field_goals_attempted'] }}</div>

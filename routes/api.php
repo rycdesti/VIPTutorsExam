@@ -18,11 +18,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('rosters', 'App\Http\Controllers\RosterController@index');
-Route::resource('teams', 'App\Http\Controllers\TeamController');
+Route::get('filterRoster', function () {
+    return redirect()->route('rosters', build_url_param());
+});
+Route::get('exportRoster', function () {
+    return redirect()->route('export', build_url_param());
+});
 
-//Route::resource('roster', 'App\Http\Controllers\RosterController');
-Route::get('roster/{code}', 'App\Http\Controllers\RosterController@show');
-Route::get('playerTotals/{id}', 'App\Http\Controllers\PlayerTotalsController@show');
-
-Route::get('printRoster', 'App\Http\Controllers\RosterController@printRoster');
+Route::get('rosters', 'App\Http\Controllers\RosterController@index')->name('rosters');
+Route::get('playerTotals/{id}', 'App\Http\Controllers\PlayerTotalsController@show')->name('playerTotals');
+Route::get('export', 'App\Http\Controllers\RosterController@printRoster')->name('export');

@@ -17,20 +17,68 @@
         </style>
     </head>
     <body class="antialiased">
-{{--    {{ $teams }}--}}
-    <form method="GET" action="{{ url('/api/rosters') }}">
-        <div class="col-md-2">
-            <div class="form-group">
-                <label for="id" style="font-weight: bold">Team:</label>
-                <select class="form-control" name="team" id="team" onchange="this.form.submit()">
+
+    <form method="GET" action="{{ url('api/filterRoster') }}" style="margin: 1rem" id="search-form" name="search-form">
+        @php($filter = $data['filter'])
+        <div>
+            <div>
+                <label for="type" style="font-weight: bold">Type:</label>
+                <select name="type" id="type">
+                    <option value="players" {{ $filter['type'] === 'players' ? 'selected' : '' }}>Players</option>
+                    <option value="playerstats" {{ $filter['type'] === 'playerstats' ? 'selected' : '' }}>Player Stats</option>
+                </select>
+            </div>
+            <div>
+                <label for="position" style="font-weight: bold">Position:</label>
+                <select name="position" id="position">
+                    <option value="">Display All</option>
+                    @foreach($data['positions'] as $position)
+                    <option value="{{$position}}" {{ $position == $filter['position'] ? 'selected' : '' }}>{{$position}}</option>
+                    @endforeach
+
+                </select>
+            </div>
+            <div>
+                <label for="team" style="font-weight: bold">Team:</label>
+                <select name="team" id="team">
                     <option value="">Display All</option>
                     @foreach($data['teams'] as $team)
-                    <option value="{{$team['code']}}" {{ $team['code'] == $data['teamSelected'] ? 'selected' : '' }}>{{$team['name']}}</option>
+                    <option value="{{$team['code']}}" {{ $team['code'] == $filter['team'] ? 'selected' : '' }}>{{$team['name']}}</option>
                     @endforeach
                 </select>
             </div>
+            <div>
+                <label for="player" style="font-weight: bold">Player:</label>
+                <input type="text" name="player" id="player" style="border: 1px solid lightgray;" value="{{ $filter['player'] }}"/>
+            </div>
         </div>
-        <div><button type="submit" class="btn btn-primary" formaction="{{ url('api/printRoster') }}">Print</button></div>
+        <style>
+            button {
+                border: 1px solid lightgray;
+                padding: 4px;
+                width: 5rem;
+                border-radius: 0.2rem;
+                color: white;
+                background: dodgerblue !important;
+                margin-top: 5px;
+            }
+        </style>
+        <div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+
+        <div style="margin-top: 1rem">
+            <label for="format" style="font-weight: bold">Export Type:</label>
+            <select name="format" id="format">
+                <option value=""></option>
+                <option value="csv">CSV</option>
+                <option value="xml">XML</option>
+                <option value="json">JSON</option>
+            </select>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary" formaction="{{ url('api/exportRoster') }}">Export</button>
+        </div>
     </form>
 
     <table class="table-auto" style="border-spacing: 1rem">
@@ -46,6 +94,7 @@
             }
             th,
             td {
+                border-radius: 0.2rem;
                 width: auto;
                 border: 1px solid black;
                 padding: 5px;
@@ -56,6 +105,7 @@
         </style>
         <tr>
             <th>Player Name</th>
+            <th>Team</th>
             <th>Number</th>
             <th>Position</th>
             <th>Height</th>
@@ -69,9 +119,11 @@
         </thead>
         <tbody>
         @foreach($data['rosters'] as $roster)
+            @php($team = $roster['team'])
             @php($playerTotals = $roster['playerTotals'])
             <tr>
                 <td>{{ $roster['name'] }}</td>
+                <td>{{ $team['name'] }}</td>
                 <td>{{ $roster['number'] }}</td>
                 <td>{{ $roster['pos'] }}</td>
                 <td>{{ $roster['height'] }}</td>
@@ -83,7 +135,7 @@
                 <td style="align-content: start">
                     <div>Age: {{ $playerTotals['age'] }}</div>
                     <div>Games: {{ $playerTotals['games'] }}</div>
-                    <div>GAmes Started: {{ $playerTotals['games_started'] }}</div>
+                    <div>Games Started: {{ $playerTotals['games_started'] }}</div>
                     <div>Minutes Played: {{ $playerTotals['minutes_played'] }}</div>
                     <div>Field Goals: {{ $playerTotals['field_goals'] }}</div>
                     <div>Field Goals Attempted: {{ $playerTotals['field_goals_attempted'] }}</div>
@@ -97,3 +149,13 @@
     </table>
     </body>
 </html>
+
+<script type="text/javascript">
+    $("#search-form").submit(function(){
+        $("input").each(function(index, input){
+            if($(input).val() === "") {
+                $(input).remove();
+            }
+        });
+    });
+</script>

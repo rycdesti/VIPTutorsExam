@@ -29,4 +29,9 @@ class Roster extends Model
     {
         return $this->hasOne(PlayerTotals::class, 'player_id', 'id');
     }
+
+    public function team()
+    {
+        return $this->hasOne(Team::class, 'code', 'team_code');
+    }
 }
